@@ -5,6 +5,8 @@
 
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
 </head>
 <body>
@@ -27,7 +29,7 @@
     <hr>
     <h3> Question 1 </h3>
      <h4> You love cats.  </h4>
-     <form>
+     <form id="question-one">
         <div class="form-check">
           <label class="form-check-label">
               <input class="form-check-input" type="radio" name="questionOne" id="" value="1">
@@ -65,7 +67,7 @@
       </form>
     <h3> Question 2 </h3>
      <h4> You love dogs.  </h4>
-     <form>
+     <form id="question-two">
         <div class="form-check">
           <label class="form-check-label">
               <input class="form-check-input" type="radio" name="questionTwo" id="" value="1">
@@ -103,7 +105,7 @@
       </form>
     <h3> Question 3 </h3>
      <h4> You love horses.  </h4>
-     <form>
+     <form id="question-three">
         <div class="form-check">
           <label class="form-check-label">
               <input class="form-check-input" type="radio" name="questionThree" id="" value="1">
@@ -141,7 +143,7 @@
       </form>
     <h3> Question 4 </h3>
      <h4> You love the beach.  </h4>
-     <form>
+     <form id="question-four">
         <div class="form-check">
           <label class="form-check-label">
               <input class="form-check-input" type="radio" name="questionFour" id="" value="1">
@@ -179,7 +181,7 @@
       </form>
     <h3> Question 5 </h3>
      <h4> You love the mountains.  </h4>
-     <form>
+     <form id="question-five">
         <div class="form-check">
           <label class="form-check-label">
               <input class="form-check-input" type="radio" name="questionFive" id="" value="1">
@@ -217,7 +219,7 @@
       </form>
     <h3> Question 6 </h3>
      <h4> You love watching Netflix.  </h4>
-     <form>
+     <form id="question-six">
         <div class="form-check">
           <label class="form-check-label">
               <input class="form-check-input" type="radio" name="questionSix" id="" value="1">
@@ -255,7 +257,7 @@
       </form>
     <h3> Question 7 </h3>
      <h4> You love reading books.  </h4>
-     <form>
+     <form id="question-seven">
         <div class="form-check">
           <label class="form-check-label">
               <input class="form-check-input" type="radio" name="questionSeven" id="" value="1">
@@ -293,7 +295,7 @@
       </form>
     <h3> Question 8 </h3>
      <h4> You love partying!  </h4>
-     <form>
+     <form id="question-eight">
         <div class="form-check">
           <label class="form-check-label">
               <input class="form-check-input" type="radio" name="questionEight" id="" value="1">
@@ -331,7 +333,7 @@
       </form>
     <h3> Question 9 </h3>
      <h4> You love coding.  </h4>
-     <form>
+     <form id="question-nine">
         <div class="form-check">
           <label class="form-check-label">
               <input class="form-check-input" type="radio" name="questionNine" id="" value="1">
@@ -369,7 +371,7 @@
       </form>
     <h3> Question 10 </h3>
      <h4> You love UNC Coding Bootcamp.  </h4>
-     <form>
+     <form id="question-ten">
         <div class="form-check">
           <label class="form-check-label">
               <input class="form-check-input" type="radio" name="questionTen" id="" value="1">
@@ -406,7 +408,7 @@
         </div>
       </form>
 
-      <button type="button" class="btn btn-lg btn-primary"> Submit </button>
+      <button type="button" class="btn btn-lg btn-primary submit"> Submit </button>
       <br>
       <hr>
       <br>
@@ -421,4 +423,136 @@
 
 
 </body>
+<script type="text/javascript">
+
+    // In this code below we create the Front-end JavaScript which "POSTS" our form data to our express server.
+    // In essence, when the user hits submit, jQuery grabs all of the fields then sends a post request to our api
+    // Our api recognizes the route (/api/tables)... and then runs the associated code (found in api-routes.js).
+    // In this case the associated code "saves" the data to the table-data.js file or waitinglist-data.js file
+
+    $(".submit").on("click", function(event) {
+      event.preventDefault();
+
+      // Here we grab the form elements
+      var newResults = {
+        name: $("#nameInput").val().trim(),
+        photo: $("#photoInput").val().trim(),
+        scores: [parseInt($("input[name=questionOne]:checked", "#question-one").val()), 
+        parseInt($("input[name=questionTwo]:checked", "#question-two").val()),
+        parseInt($("input[name=questionThree]:checked", "#question-three").val()),
+        parseInt($("input[name=questionFour]:checked", "#question-four").val()),
+        parseInt($("input[name=questionFive]:checked", "#question-five").val()),
+        parseInt($("input[name=questionSix]:checked", "#question-six").val()),
+        parseInt($("input[name=questionSeven]:checked", "#question-seven").val()),
+        parseInt($("input[name=questionEight]:checked", "#question-eight").val()),
+        parseInt($("input[name=questionNine]:checked", "#question-nine").val()),
+        parseInt($("input[name=questionTen]:checked", "#question-ten").val())
+         ]
+      };
+
+      console.log(newResults);
+
+      // This line is the magic. It"s very similar to the standard ajax function we used.
+      // Essentially we give it a URL, we give it the object we want to send, then we have a "callback".
+      // The callback is the response of the server. In our case, we set up code in api-routes that "returns" true or false
+      // depending on if a tables is available or not.
+
+      $.post("/api/friends", newResults,
+        function(data) {
+
+          
+
+          // Clear the form when submitting
+          $("#nameInput").val("");
+          $("#photoInput").val("");
+          $("#question-one").val("");
+          $("#question-two").val("");
+          $("#question-three").val("");
+          $("#question-four").val("");
+          $("#question-five").val("");
+          $("#question-six").val("");
+          $("#question-seven").val("");
+          $("#question-eight").val("");
+          $("#question-nine").val("");
+          $("#question-ten").val("");
+
+        }); 
+
+    }); 
+
+</script>
 </html>
+
+<!-- Questions for office hours:
+
+where does friend comparison logic go? 
+Where does modal prompt go - on submit but wait for logic to run? 
+how come I cannot post these responses to friends.js? 
+why an error with hardcoded friends data? 
+
+
+
+Modal:
+ <*******Button trigger modal*****> 
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  Launch demo modal
+</button>
+
+ <********Modal********>
+<div class="modal" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Your Best Match!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <insert data for best match here - new varieable "bestMatch" from friends logic? bestMatch.name, etc?>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+Friends Logic:
+when a new friend is posted,
+loop through matches to get matches.scores[i] and each time compare to compareNew, how to compare each element? nested for loops? .... array of differences for each comparison or just total? 
+
+var compareNew = newResults.scores;
+var differences = [];
+
+
+
+for (i=0; matches.length<i; i++) {
+  var compareCurrent = matches.scores[i];
+  for (i=0; compareCurrent.length<i; i++){
+    var compareResults = [];
+    var difference = Math.abs(compareCurrent[i] - compareNew[i]);
+    compareResults.push(difference);
+    for (i=0; compareResults.length<i; i++){
+      var totalDifference += compareResults[i];
+      differences.push(totalDifference)
+    }
+  }
+  
+};
+
+how to find the lowest number in difference without ordering the array?
+loop through and create a var and replace with index of array if less than previous? 
+then bestMatch = matches.name at index of result from previous loop?
+
+
+
+
+
+
+
+
+
