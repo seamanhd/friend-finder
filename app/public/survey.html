@@ -408,7 +408,7 @@
         </div>
       </form>
 
-      <button type="button" class="btn btn-lg btn-primary submit"> Submit </button>
+      <button type="button" class="btn btn-lg btn-primary submit" data-toggle="modal" data-target="#resultsModal"> Submit </button>
       <br>
       <hr>
       <br>
@@ -420,6 +420,27 @@
     </footer>
 
   </div>
+
+  <div class="modal" id="resultsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="exampleModalLabel">Your Best Match!</h2>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h4 id="bestMatch"> </h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
 </body>
@@ -456,11 +477,27 @@
       // Essentially we give it a URL, we give it the object we want to send, then we have a "callback".
       // The callback is the response of the server. In our case, we set up code in api-routes that "returns" true or false
       // depending on if a tables is available or not.
+      // post with callback function
 
-      $.post("/api/friends", newResults,
-        function(data) {
+              // Grab the URL of the website
+        var currentURL = window.location.origin;
 
-          
+        // AJAX post the data to the friends API. 
+        $.post(currentURL + "/api/friends", newResults, function(data){
+
+      //$.post("/api/friends", newResults, function(data) {
+
+                 
+        
+
+          // Grab the result from the AJAX post so that the best match's name and photo are displayed.
+          $("#bestMatch").text(bestMatch);
+          $('#matchImg').attr("src", data.photo);
+
+          // Show the modal with the best match 
+          $("#resultsModal").modal('toggle');
+
+    
 
           // Clear the form when submitting
           $("#nameInput").val("");
@@ -477,28 +514,22 @@
           $("#question-ten").val("");
 
         }); 
-
     }); 
 
 </script>
 </html>
 
-<!-- Questions for office hours:
-
-where does friend comparison logic go? 
-Where does modal prompt go - on submit but wait for logic to run? 
-how come I cannot post these responses to friends.js? 
-why an error with hardcoded friends data? 
+<!-- 
 
 
 
 Modal:
  <*******Button trigger modal*****> 
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+<button type="button" class="btn btn-primary" >
   Launch demo modal
 </button>
 
- <********Modal********>
+ 
 <div class="modal" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -525,24 +556,7 @@ Friends Logic:
 when a new friend is posted,
 loop through matches to get matches.scores[i] and each time compare to compareNew, how to compare each element? nested for loops? .... array of differences for each comparison or just total? 
 
-var compareNew = newResults.scores;
-var differences = [];
 
-
-
-for (i=0; matches.length<i; i++) {
-  var compareCurrent = matches.scores[i];
-  for (i=0; compareCurrent.length<i; i++){
-    var compareResults = [];
-    var difference = Math.abs(compareCurrent[i] - compareNew[i]);
-    compareResults.push(difference);
-    for (i=0; compareResults.length<i; i++){
-      var totalDifference += compareResults[i];
-      differences.push(totalDifference)
-    }
-  }
-  
-};
 
 how to find the lowest number in difference without ordering the array?
 loop through and create a var and replace with index of array if less than previous? 
