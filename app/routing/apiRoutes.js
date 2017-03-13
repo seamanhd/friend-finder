@@ -64,7 +64,7 @@ module.exports = function(app) {
           };
           
           if(difference < lowestDifference) {
-              bestMatch = matches[i].name;
+              bestMatch = matches[i];
               lowestDifference = difference;
 
           }
@@ -77,10 +77,11 @@ module.exports = function(app) {
         };
       
 
-       
+        res.json(bestMatch);
         
       });
      
+    
       
   };
 
